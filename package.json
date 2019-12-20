@@ -1,0 +1,26 @@
+{
+  "name": "markdown-editor",
+  "version": "1.0.0",
+  "description": "Mardown editor with support for multiple files",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Ich",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^7.1.2"
+  },
+  "dependencies": {
+    "markdown-it": "^10.0.0"
+  },
+  "build": {
+    "appId": "ac.at.fh-salzburg.its.markdown-editor",
+    "productName": "",
+    "copyright": "Copyright © 2019 ${author}",
+    "win": {
+      "target": "msi",
+      "icon": "buildResources/icon.ico"
+    }
+  }
+}

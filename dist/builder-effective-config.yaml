@@ -1,0 +1,10 @@
+directories:
+  output: dist
+  buildResources: build
+appId: ac.at.fh-salzburg.its.markdown-editor
+productName: ''
+copyright: 'Copyright © 2019 ${author}'
+win:
+  target: msi
+  icon: buildResources/icon.ico
+electronVersion: 7.1.2
