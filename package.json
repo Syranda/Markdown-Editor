@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron ."
   },
-  "author": "Ich",
+  "author": "Ich <mrsyranda98@web.de>",
   "license": "ISC",
   "devDependencies": {
     "electron": "^7.1.2"
@@ -21,6 +21,16 @@
     "win": {
       "target": "msi",
       "icon": "buildResources/icon.ico"
+    },
+    "linux": {
+      "target": "deb",
+      "category": "Office",
+      "icon": "buildResources/icon.png",
+      "desktop": {
+        "Name": "Markdown Editor",
+        "Type": "Application",
+        "Icon": "buildResources/icon.png"
+      }      
     }
   }
 }
