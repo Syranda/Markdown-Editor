@@ -9,18 +9,25 @@
   "author": "Ich <mrsyranda98@web.de>",
   "license": "ISC",
   "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.12.0",
     "electron": "^7.1.2"
   },
   "dependencies": {
-    "markdown-it": "^10.0.0"
+    "js-sha512": "^0.8.0",
+    "markdown-it": "^10.0.0",
+    "marked": "^0.8.0"
   },
   "build": {
     "appId": "ac.at.fh-salzburg.its.markdown-editor",
     "productName": "",
     "copyright": "Copyright © 2019 ${author}",
     "win": {
-      "target": "msi",
+      "target": "nsis",
       "icon": "buildResources/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
     },
     "linux": {
       "target": "deb",
@@ -30,7 +37,7 @@
         "Name": "Markdown Editor",
         "Type": "Application",
         "Icon": "buildResources/icon.png"
-      }      
+      }
     }
   }
 }

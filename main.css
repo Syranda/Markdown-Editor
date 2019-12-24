@@ -7,6 +7,15 @@ html, body {
   height: 100%;
 }
 
+a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 #main {
   padding: 0;
   margin: 0;
@@ -57,6 +66,18 @@ html, body {
   line-height: 1.5rem;
 }
 
+#noopenfiles {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', 'Ubuntu', 'Droid Sans', sans-serif;
+  color: #888;
+  line-height: 2.15rem;
+  text-align: center;
+}
+
 #preview {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', 'Ubuntu', 'Droid Sans', sans-serif;
   background-color: var(--main-back);
@@ -67,15 +88,6 @@ html, body {
   max-width: 50%;
   border-left: 2px solid #1f1f1f;
   padding-left: 1rem;
-}
-
-#preview a {
-  color: #3498db;
-  text-decoration: none;
-}
-
-#preview a:hover {
-  text-decoration: underline;
 }
 
 body {
@@ -95,11 +107,16 @@ body {
 
 #tabs .tab {
   background-color: #1f1f1f;
-  display: inline-block;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   margin: 0;
   padding: .5rem 1rem;
+  -webkit-box-align: baseline;
+      -ms-flex-align: baseline;
+          align-items: baseline;
   min-width: 6rem;
   color: white;
   cursor: pointer;
@@ -107,5 +124,16 @@ body {
 
 #tabs .tab.active {
   background-color: var(--main-back);
+}
+
+#tabs .tab .close {
+  padding-left: 1rem;
+  color: #444;
+  -webkit-transition: all .2s;
+  transition: all .2s;
+}
+
+#tabs .tab .close:hover {
+  color: #666;
 }
 /*# sourceMappingURL=main.css.map */

@@ -7,6 +7,14 @@ html, body {
     height: 100%;
 }
 
+a {
+    color: #3498db;
+    text-decoration: none;
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
 #main {
     padding: 0;
     margin: 0;
@@ -48,6 +56,16 @@ html, body {
     line-height: 1.5rem;
 }
 
+#noopenfiles {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', 'Ubuntu', 'Droid Sans', sans-serif;
+    color: #888;
+    line-height: 2.15rem;
+    text-align: center;
+}
 
 #preview {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', 'Ubuntu', 'Droid Sans', sans-serif;
@@ -55,13 +73,6 @@ html, body {
     flex-grow: 1;
     color: lightgray;
     max-width: 50%;
-    a {
-        color: #3498db;
-        text-decoration: none;
-        &:hover {
-            text-decoration: underline;
-        }
-    }
     border-left: 2px solid #1f1f1f;
     padding-left: 1rem;
 }
@@ -77,17 +88,27 @@ body {
 
     .tab {
         background-color: #1f1f1f;
-        display: inline-block;
+        display: inline-flex;
         box-sizing: border-box;
 
         margin: 0;
         padding: .5rem 1rem;
+
+        align-items: baseline;
 
         min-width: 6rem;
         color: white;
         cursor: pointer;
         &.active {
             background-color: var(--main-back);
+        }
+        .close {
+            padding-left: 1rem;
+            color: #444;
+            transition: all .2s;
+            &:hover {
+                color: #666;
+            }
         }
     }
 }
