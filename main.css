@@ -64,6 +64,20 @@ a:hover {
   height: auto;
   resize: none;
   line-height: 1.5rem;
+  white-space: nowrap;
+}
+
+#raw::-moz-selection {
+  filter: brightness(50%);
+  background-color: rgba(52, 152, 219, 0.2);
+  color: inherit;
+}
+
+#raw::selection {
+  -webkit-filter: brightness(50%);
+          filter: brightness(50%);
+  background-color: rgba(52, 152, 219, 0.2);
+  color: inherit;
 }
 
 #noopenfiles {
@@ -88,6 +102,9 @@ a:hover {
   max-width: 50%;
   border-left: 2px solid #1f1f1f;
   padding-left: 1rem;
+  overflow-wrap: unset;
+  white-space: nowrap;
+  overflow: auto;
 }
 
 body {
@@ -135,5 +152,19 @@ body {
 
 #tabs .tab .close:hover {
   color: #666;
+}
+
+#controls button {
+  outline: 0;
+  border: 0;
+  color: #888;
+  font-size: 1.25rem;
+  padding: 0.25rem;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+#controls button:not(:first-child) {
+  margin-left: .25rem;
 }
 /*# sourceMappingURL=main.css.map */

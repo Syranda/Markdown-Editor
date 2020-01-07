@@ -7,6 +7,7 @@ const raw = document.getElementById('raw');
 const preview = document.getElementById('preview');
 const tabs = document.getElementById('tabs');
 const noOpenFiles = document.getElementById('noopenfiles');
+const controls = document.getElementById('controls');
 
 const newFileEl = document.getElementById('newfile');
 const openFileEl = document.getElementById('openfile');  
@@ -82,6 +83,7 @@ function updateUI() {
     raw.style.display = display;
     preview.style.display = display;
     tabs.style.display = display;
+    controls.style.display = display;
 
     noOpenFiles.style.display = tabsState.length > 0 ? 'none' : 'initial';
 
@@ -219,3 +221,127 @@ updateUI();
 
 openFileEl.addEventListener('click', () => ipcRenderer.send('open-file'));
 newFileEl.addEventListener('click', newFile);
+
+
+function headingBtn(e) {
+    e.preventDefault();
+
+    if (!lastSelected) {
+        return;
+    }    
+
+    if (lastSelected[0] === lastSelected[1]) {
+
+        for (let i = lastSelected[0]; i >= 0; i--) {
+            let current = raw.value.charAt(i);
+            if (current !== '\n') {
+                continue;
+            }
+            raw.value = raw.value.substr(0, i) + '\n# ' + raw.value.substr(i + 1);   
+            updateUI();   
+            return;
+
+        }
+
+        raw.value += '\n# ';
+
+    } else {
+
+        raw.value = raw.value.substr(0, lastSelected[0]) + '\n# ' + raw.value.substr(lastSelected[0], lastSelected[1]) + "\n"  + raw.value.substr(lastSelected[1], raw.value.length);
+
+    }
+
+    updateUI();
+
+}
+
+function linkBtn(e) {
+    e.preventDefault();
+
+    if (!lastSelected) {
+        return;
+    }    
+
+    if (lastSelected[0] === lastSelected[1]) {
+
+        for (let i = lastSelected[0]; i >= 0; i--) {
+            let current = raw.value.charAt(i);
+            if (current !== '\n') {
+                continue;
+            }
+            raw.value = raw.value.substr(0, i) + '\nhttp://www.google.at/' + raw.value.substr(i + 1);  
+            updateUI();  
+            return;
+
+        }
+
+        raw.value += '\nhttp://www.google.at/';
+
+    } else {
+
+        raw.value = raw.value.substr(0, lastSelected[0]) + '\n[' + raw.value.substr(lastSelected[0], lastSelected[1]) + "](http://www.google.at/)\n"  + raw.value.substr(lastSelected[1], raw.value.length);
+
+    }
+
+    updateUI();
+}
+
+function codeBtn(e) {
+    e.preventDefault();
+
+    if (!lastSelected) {
+        return;
+    }    
+
+    if (lastSelected[0] === lastSelected[1]) {
+
+        for (let i = lastSelected[0]; i >= 0; i--) {
+            let current = raw.value.charAt(i);
+            if (current !== '\n') {
+                continue;
+            }
+            raw.value = raw.value.substr(0, i) + '\n```\ncode\n```' + raw.value.substr(i + 1);    
+            updateUI();  
+            return;
+
+        }
+
+        raw.value += '\n```\ncode\n```';
+
+    } else {
+
+        raw.value = raw.value.substr(0, lastSelected[0]) + '\n```\n' + raw.value.substr(lastSelected[0], lastSelected[1]) + "\n```\n"  + raw.value.substr(lastSelected[1], raw.value.length);
+
+    }
+
+    updateUI();
+}
+
+const heading = document.getElementById('headingBtn');
+heading.addEventListener('click', headingBtn);
+const link = document.getElementById('linkBtn');
+link.addEventListener('click', linkBtn);
+const code = document.getElementById('codeBtn');
+code.addEventListener('click', codeBtn);
+
+let lastSelected;
+
+document.addEventListener('selectionchange', (e) => {
+    const target = e.target.activeElement;
+    if (target.id !== 'raw') {
+        lastSelected = undefined;
+        return;
+    }
+    const { selectionStart, selectionEnd } = target;
+
+    lastSelected = [selectionStart, selectionEnd];
+
+});
+
+let el = document.getElementsByClassName('control')
+
+for (let i = 0; i < el.length; i++) {
+    el.item(i).addEventListener('focus', e => {
+        raw.focus();
+    });
+}
