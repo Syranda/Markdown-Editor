@@ -13,6 +13,7 @@
     "electron": "^7.1.2"
   },
   "dependencies": {
+    "autosize": "^4.0.2",
     "js-sha512": "^0.8.0",
     "markdown-it": "^10.0.0",
     "marked": "^0.8.0"

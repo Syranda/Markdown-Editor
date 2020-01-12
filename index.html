@@ -10,19 +10,46 @@
 </head>
 <body>
     <section id="controls">
-        <button id="headingBtn" class="control"><i class="fas fa-heading"></i></button>
-        <button id="quoteBtn" class="control"><i class="fas fa-quote-right"></i></button>
-        <button id="linkBtn" class="control"><i class="fas fa-link"></i></i></button>
-        <button id="imgBtn" class="control"><i class="fas fa-image"></i></button>
-        <button id="codeBtn" class="control"><i class="fas fa-code"></i></button>
+        <div class="ctrlGrp">
+            <h3>Headings</h3>
+            <div class="btns">
+                <button class="control" onclick="inject({before: '#', padded: true})"><i class="fas fa-heading"></i>Heading 1</button>
+                <button class="control" onclick="inject({before: '##', padded: true})"><i class="fas fa-heading"></i>Heading 2</button>
+                <button class="control" onclick="inject({before: '###', padded: true})"><i class="fas fa-heading"></i>Heading 3</button>
+                <button class="control" onclick="inject({before: '####', padded: true})"><i class="fas fa-heading"></i>Heading 4</button>
+                <button class="control" onclick="inject({before: '#####', padded: true})"><i class="fas fa-heading"></i>Heading 5</button>
+                <button class="control" onclick="inject({before: '######', padded: true})"><i class="fas fa-heading"></i>Heading 6</button>                  
+            </div>   
+        </div>  
+        <div class="ctrlGrp">
+            <h3>Transform</h3>
+            <div class="btns">
+                <button class="control" onclick="inject({before: '**', after: '**', inline: true })"><i class="fas fa-bold"></i>Bold</button>
+                <button class="control" onclick="inject({before: '*', after: '*', inline: true})"><i class="fas fa-italic"></i>Italic</button>
+                <button class="control" onclick="inject({before: '__', after: '__', inline: true})"><i class="fas fa-underline"></i>Underlined</button> 
+            </div>   
+        </div>  
+
+        <div class="ctrlGrp">
+            <h3>Insert</h3>
+            <div class="btns">        
+                <button class="control" onclick="inject({before: '>', preserveNewLine: true})"><i class="fas fa-quote-right"></i>Blockquote</button>  
+                <button class="control" onclick="inject({before: '[', after: '](url)', inline: true})"><i class="fas fa-link"></i>Anchor</button>
+                <button class="control" onclick="injectImage()"><i class="fas fa-image"></i>Image</button>
+                <button class="control" onclick="inject({before: '`', after: '`', inline: true})"><i class="fas fa-code"></i>Code</button>
+                <button class="control" onclick="inject({before: '```\n', after: '```'})"><i class="fas fa-code"></i>Code Block</button>
+            </div>   
+        </div>  
     </section>
     <nav id="tabs">
     </nav>
     <main id="main">
-        <aside id="lines">
-        </aside>
-        <textarea id="raw">
-        </textarea>
+        <section id="write">
+            <aside id="lines">
+            </aside>
+            <textarea id="raw">
+            </textarea>
+        </section>
         <section id="preview"></section>
         <section id="noopenfiles">          
             <h1>No open files</h1>
@@ -30,6 +57,14 @@
             Or you can <a href="#" id="openfile">open</a> an exisiting one
         </section>
     </main>
+    <section id="search">
+        <i class="fas fa-times close" onclick="document.getElementById('search').style.visibility = 'hidden'"></i>
+        <input type="text" placeholder="Search" id="searchBox">
+        <input type="text" placeholder="Replace" id="replaceBox">
+        <button id="searchBtn">Search</button>
+        <button id="replaceBtn">Replace</button>
+        <label id="status"></label>
+    </section>
     <script src="functions.js"></script>
 </body>
 </html>

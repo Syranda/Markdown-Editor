@@ -15,7 +15,7 @@ const openFileEl = document.getElementById('openfile');
 let nextId = 1; 
 const { ipcRenderer } = require('electron');
 
-const { app, Menu, dialog } = require('electron').remote;
+const { app, Menu, dialog, shell } = require('electron').remote;
 
 let tabsState = [];
 let activeTab;
@@ -48,6 +48,14 @@ function generateMarkdown() {
     const marked = require('marked');
     const rendered = marked(raw.value);
     preview.innerHTML = rendered;
+    let links = preview.getElementsByTagName('a');
+    for (let i = 0; i < links.length; i++) {
+        let current = links.item(i);
+        current.addEventListener('click', e => {
+            e.preventDefault();
+            shell.openExternal(current.getAttribute('href'));
+        });
+    }
 }
 
 function refreshTabs() {
@@ -91,6 +99,10 @@ function updateUI() {
         setActiveTab(tabsState[0].id);
     }
 
+    if (tabsState.length > 0) {
+        raw.style.height = (raw.scrollHeight + 15) + 'px';
+    }    
+
 }
 
 function setActiveTab(id) {
@@ -106,7 +118,7 @@ function setActiveTab(id) {
     updateUI();
 }
 
-raw.addEventListener('keyup', e => {
+raw.addEventListener('input', e => {
     let at = tabsState.find(tab => tab.id === activeTab);
     at.content = e.target.value;
     at.changed = true;
@@ -143,7 +155,7 @@ function save(after) {
     fs.writeFileSync(tab.file, tab.content);
     tab.hash = sha512(tab.content);
     updateUI();
-    if (after) {
+    if (after && typeof(after) === Function) {
         after();
     }
 }
@@ -222,108 +234,6 @@ updateUI();
 openFileEl.addEventListener('click', () => ipcRenderer.send('open-file'));
 newFileEl.addEventListener('click', newFile);
 
-
-function headingBtn(e) {
-    e.preventDefault();
-
-    if (!lastSelected) {
-        return;
-    }    
-
-    if (lastSelected[0] === lastSelected[1]) {
-
-        for (let i = lastSelected[0]; i >= 0; i--) {
-            let current = raw.value.charAt(i);
-            if (current !== '\n') {
-                continue;
-            }
-            raw.value = raw.value.substr(0, i) + '\n# ' + raw.value.substr(i + 1);   
-            updateUI();   
-            return;
-
-        }
-
-        raw.value += '\n# ';
-
-    } else {
-
-        raw.value = raw.value.substr(0, lastSelected[0]) + '\n# ' + raw.value.substr(lastSelected[0], lastSelected[1]) + "\n"  + raw.value.substr(lastSelected[1], raw.value.length);
-
-    }
-
-    updateUI();
-
-}
-
-function linkBtn(e) {
-    e.preventDefault();
-
-    if (!lastSelected) {
-        return;
-    }    
-
-    if (lastSelected[0] === lastSelected[1]) {
-
-        for (let i = lastSelected[0]; i >= 0; i--) {
-            let current = raw.value.charAt(i);
-            if (current !== '\n') {
-                continue;
-            }
-            raw.value = raw.value.substr(0, i) + '\nhttp://www.google.at/' + raw.value.substr(i + 1);  
-            updateUI();  
-            return;
-
-        }
-
-        raw.value += '\nhttp://www.google.at/';
-
-    } else {
-
-        raw.value = raw.value.substr(0, lastSelected[0]) + '\n[' + raw.value.substr(lastSelected[0], lastSelected[1]) + "](http://www.google.at/)\n"  + raw.value.substr(lastSelected[1], raw.value.length);
-
-    }
-
-    updateUI();
-}
-
-function codeBtn(e) {
-    e.preventDefault();
-
-    if (!lastSelected) {
-        return;
-    }    
-
-    if (lastSelected[0] === lastSelected[1]) {
-
-        for (let i = lastSelected[0]; i >= 0; i--) {
-            let current = raw.value.charAt(i);
-            if (current !== '\n') {
-                continue;
-            }
-            raw.value = raw.value.substr(0, i) + '\n```\ncode\n```' + raw.value.substr(i + 1);    
-            updateUI();  
-            return;
-
-        }
-
-        raw.value += '\n```\ncode\n```';
-
-    } else {
-
-        raw.value = raw.value.substr(0, lastSelected[0]) + '\n```\n' + raw.value.substr(lastSelected[0], lastSelected[1]) + "\n```\n"  + raw.value.substr(lastSelected[1], raw.value.length);
-
-    }
-
-    updateUI();
-}
-
-const heading = document.getElementById('headingBtn');
-heading.addEventListener('click', headingBtn);
-const link = document.getElementById('linkBtn');
-link.addEventListener('click', linkBtn);
-const code = document.getElementById('codeBtn');
-code.addEventListener('click', codeBtn);
-
 let lastSelected;
 
 document.addEventListener('selectionchange', (e) => {
@@ -338,10 +248,176 @@ document.addEventListener('selectionchange', (e) => {
 
 });
 
-let el = document.getElementsByClassName('control')
+function inject({before = '', after = '', preserveNewLine = false, inline = false, padded = false}) {
 
-for (let i = 0; i < el.length; i++) {
-    el.item(i).addEventListener('focus', e => {
-        raw.focus();
+    if (!lastSelected) {
+        return;
+    }
+
+    const [first, second] = lastSelected;
+    const { value } = raw;
+
+    let beforeText = value.substring(0, first);
+    let afterText = value.substring(second, value.length);
+    let selectionText = value.substring(first, second);
+
+    if (inline === true) {
+        before = (hasLeadingSpace(first) === true ? '' : ' ') + before;
+    } else {
+        before = (hasLeadingNewLine(first) === true ? '' : '\n') + before;
+        after = after + (hasTrailingNewLine(second) === true ? '' : '\n');
+    }
+
+    if (preserveNewLine === true && selectionText.length > 0) {
+        selectionText = selectionText.replace(/\n+/g, after + '\n' + before).replace(/\n+/g, before + '\n');
+    } else if (preserveNewLine === false && selectionText.length > 0) {
+        selectionText = selectionText.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+    }
+    
+    raw.value = beforeText + before + (padded === true ? ' ' : '') + selectionText + after + afterText;
+
+    if (raw.value.startsWith('\n')) {
+        raw.value = raw.value.substring(1);
+    }
+    raw.dispatchEvent(new Event('input'));
+
+    raw.selectionStart = second + before.length;
+    raw.selectionEnd = second + before.length;
+    raw.focus();
+
+}
+
+function hasLeadingNewLine(index) {
+    return index !== 0 ? raw.value.charAt(index - 1) === '\n' : false;
+}
+
+function hasTrailingNewLine(index) {
+    return index !== raw.value.length - 1 ? raw.value.charAt(index + 1) === '\n' : false;
+}
+
+function hasLeadingSpace(index) {
+    return index !== 0 ? raw.value.charAt(index - 1) === ' ' : false;
+}
+
+function injectImage() {
+    dialog.showOpenDialog({
+        filters: [
+            { name: 'Images (.png, .jpeg, .jpg, .gif)', extensions: ['png', 'jpeg', 'jpg', 'gif', 'jfif'] },
+            { name: 'All Files (*)', extensions: ['*'] }
+        ]
+    }).then(({canceled, filePaths}) => {
+        if (canceled === true) {
+            return;
+        }
+        fs.copyFileSync(filePaths[0], __dirname + '\\' + path.win32.basename(filePaths[0]));
+        inject({before: '![', after: '](' + path.win32.basename(filePaths[0]) + ')', inline: true})
     });
+
+}
+
+const searchContainer = document.getElementById('search');
+
+ipcRenderer.on('search', () => {
+    searchContainer.style.visibility = 'visible';
+});
+
+const searchBtn = document.getElementById('searchBtn');
+const replaceBtn = document.getElementById('replaceBtn');
+
+const searchBox = document.getElementById('searchBox');
+const replaceBox = document.getElementById('replaceBox');
+const error = document.getElementById('error');
+const status = document.getElementById('status');
+
+let current = 1;
+let occureneces = [];
+
+searchBox.addEventListener('input', (e) => {
+    const { value } = e.target;
+
+    if (value.trim().length === 0) {
+        status.innerHTML = '';
+        return;
+    }
+
+    occureneces = [];
+    let lines = raw.value.split('\n');
+    let offset = 0;
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i];
+
+        let index = 0;
+        let foundIndex;
+        do  {
+            foundIndex = line.indexOf(value, index);
+            if (foundIndex !== -1) {
+                occureneces.push({
+                    line: i + 1,
+                    index: offset + foundIndex,
+                });
+            }
+            index = foundIndex + 1;
+        } while (foundIndex !== -1);
+        offset += line.length;
+    }
+
+    status.innerHTML = "Found " + occureneces.length + " times";
+
+});
+
+searchBtn.addEventListener('click', search);
+replaceBtn.addEventListener('click', replace);
+
+function search() {
+    let { value } = searchBox;
+
+    if (value.trim().length === 0) {
+        return 0;
+    }
+
+    searchBox.dispatchEvent(new Event('input'));
+
+    let startPos = raw.selectionEnd | 0;
+    let index = raw.value.indexOf(value, startPos);
+
+    if (!index || index === -1) {
+        startPos = 0;
+        index = raw.value.indexOf(value, startPos);
+        if (index === -1) {
+            return;
+        }
+    }
+
+    raw.focus()
+    raw.selectionStart = index;
+    raw.selectionEnd = index + value.length;
+
+    let lines = raw.value.match(/\n/g).length;
+    let lineHeight = raw.clientHeight / lines;
+    let occurenece = occureneces.find(occ => index === occ.index + (occ.line - 1));
+    if (!occurenece) {
+        return;
+    }
+    document.getElementById('write').scrollTop = lineHeight * (occurenece.line - 1);
+ 
+    return 0;
+}
+
+function replace() {
+    let searchTerm = searchBox.value;
+    let replaceWith = replaceBox.value;
+    let current = raw.value.substring(raw.selectionStart, raw.selectionEnd);
+    
+    if (searchTerm.length === 0 || replaceWith.length === 0) {
+        return;
+    }
+
+    if (current !== searchTerm) {
+        search();
+    } 
+
+    raw.value = raw.value.substring(0, raw.selectionStart) + replaceWith + raw.value.substring(raw.selectionEnd, raw.value.length);
+    raw.dispatchEvent(new Event('input'));
+    search();
+
 }

@@ -11,7 +11,6 @@ function createWindow() {
         }
     });
     win.loadFile('index.html');
-    win.webContents.openDevTools();
 
     win.on('close', () => {
         win = null;
@@ -108,6 +107,17 @@ men.append(new MenuItem({
         })
     ]
 }));
+men.append(new MenuItem({
+    label: 'Edit',
+    type: 'submenu',
+    submenu: [
+        new MenuItem({
+            label: 'Search',
+            accelerator: 'CommandOrControl+F',
+            click: () => win.webContents.send('search')
+        })
+    ]
+}))
 
 Menu.setApplicationMenu(men);
 

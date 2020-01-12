@@ -1,0 +1,21 @@
+directories:
+  output: dist
+  buildResources: build
+appId: ac.at.fh-salzburg.its.markdown-editor
+productName: ''
+copyright: 'Copyright © 2019 ${author}'
+win:
+  target: nsis
+  icon: buildResources/icon.ico
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+linux:
+  target: deb
+  category: Office
+  icon: buildResources/icon.png
+  desktop:
+    Name: Markdown Editor
+    Type: Application
+    Icon: buildResources/icon.png
+electronVersion: 7.1.2

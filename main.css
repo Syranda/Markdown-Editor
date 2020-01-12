@@ -4,33 +4,11 @@ html, body {
   margin: 0;
   --main-back: #2b2b2b;
   line-height: 1.5rem;
-  height: 100%;
 }
 
-a {
-  color: #3498db;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-#main {
-  padding: 0;
-  margin: 0;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  font-family: Consolas, 'Courier New', monospace;
-  height: 100%;
-  width: 100%;
-  font-size: 18px;
-}
-
-#lines {
-  background-color: var(--main-back);
-  color: gray;
+body {
+  min-height: 100vh;
+  max-height: 100vh;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -38,46 +16,58 @@ a:hover {
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  min-width: 4rem;
 }
 
-#lines label {
-  display: block;
-  padding: 0 20px;
-  text-align: right;
+body ::-webkit-scrollbar {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  background-color: transparent;
 }
 
-#raw {
-  color: lightgray;
-  white-space: pre-wrap;
+body ::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+body ::-webkit-scrollbar-thumb {
+  background-color: rgba(31, 31, 31, 0.7);
+  border-radius: 3px;
+  -webkit-transition: -webkit-filter .2s;
+  transition: -webkit-filter .2s;
+  transition: filter .2s;
+  transition: filter .2s, -webkit-filter .2s;
+  opacity: .2;
+}
+
+body ::-webkit-scrollbar-thumb:hover {
+  -webkit-filter: opacity(1);
+          filter: opacity(1);
+}
+
+body ::-webkit-scrollbar-corner {
   background-color: var(--main-back);
-  padding: 0;
-  margin: 0;
-  outline: 0;
-  border: 0;
-  font-size: 18px;
-  font-family: Consolas, 'Courier New', monospace;
-  -webkit-box-flex: 2;
-      -ms-flex-positive: 2;
-          flex-grow: 2;
-  max-width: 50%;
-  height: auto;
-  resize: none;
-  line-height: 1.5rem;
-  white-space: nowrap;
 }
 
-#raw::-moz-selection {
+body *::-moz-selection {
   filter: brightness(50%);
   background-color: rgba(52, 152, 219, 0.2);
   color: inherit;
 }
 
-#raw::selection {
+body *::selection {
   -webkit-filter: brightness(50%);
           filter: brightness(50%);
   background-color: rgba(52, 152, 219, 0.2);
   color: inherit;
+}
+
+body a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+body a:hover {
+  text-decoration: underline;
 }
 
 #noopenfiles {
@@ -92,29 +82,45 @@ a:hover {
   text-align: center;
 }
 
-#preview {
+#controls {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', 'Ubuntu', 'Droid Sans', sans-serif;
-  background-color: var(--main-back);
-  -webkit-box-flex: 1;
-      -ms-flex-positive: 1;
-          flex-grow: 1;
-  color: lightgray;
-  max-width: 50%;
-  border-left: 2px solid #1f1f1f;
-  padding-left: 1rem;
-  overflow-wrap: unset;
-  white-space: nowrap;
-  overflow: auto;
+  color: white;
 }
 
-body {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
+#controls .ctrlGrp {
+  display: inline-block;
+  padding: 0 1rem;
+}
+
+#controls .ctrlGrp h3 {
+  text-align: center;
+  margin: .25rem 0;
+}
+
+#controls .ctrlGrp:not(:first-child) {
+  border-left: 2px solid #1f1f1f;
+}
+
+#controls button {
+  outline: 0;
+  border: 0;
+  color: #888;
+  font-size: 14px;
+  padding: 0.25rem;
+  background-color: transparent;
+  cursor: pointer;
+  margin: .5rem .5rem;
+}
+
+#controls button i {
+  color: white;
+  display: block;
+  font-size: 1.25rem;
+  margin-bottom: 8px;
 }
 
 #tabs {
@@ -123,6 +129,10 @@ body {
 }
 
 #tabs .tab {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
   background-color: #1f1f1f;
   display: -webkit-inline-box;
   display: -ms-inline-flexbox;
@@ -154,17 +164,195 @@ body {
   color: #666;
 }
 
-#controls button {
+#main {
+  padding: 0;
+  margin: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  font-family: Consolas, 'Courier New', monospace;
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  font-size: 18px;
+  min-height: 0;
+  height: auto;
+}
+
+#main #write {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 50%;
+  overflow-y: auto;
+  -webkit-box-align: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch;
+}
+
+#main #write #lines {
+  background-color: var(--main-back);
+  color: gray;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  min-width: 4rem;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+#main #write #lines label {
+  display: block;
+  padding: 0 20px;
+  text-align: right;
+}
+
+#main #write #raw {
+  font-size: 18px;
+  font-family: Consolas, 'Courier New', monospace;
+  line-height: 1.5rem;
+  color: lightgray;
+  background-color: var(--main-back);
+  padding: 0;
+  margin: 0;
   outline: 0;
   border: 0;
-  color: #888;
-  font-size: 1.25rem;
-  padding: 0.25rem;
+  white-space: nowrap;
+  resize: none;
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  overflow-x: scroll;
+}
+
+#main #preview {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', 'Ubuntu', 'Droid Sans', sans-serif;
+  background-color: var(--main-back);
+  color: white;
+  border-left: 2px solid #1f1f1f;
+  padding-left: 1rem;
+  white-space: initial;
+  overflow: auto;
+  max-width: 50%;
+  width: 50%;
+  min-height: 0;
+}
+
+#main #preview table {
+  border-collapse: collapse;
+}
+
+#main #preview table tr > td, #main #preview table th {
+  padding: .25rem;
+}
+
+#main #preview table thead tr > th {
+  border-bottom: 2px solid white;
+  text-align: left;
+}
+
+#main #preview table tbody tr:not(:last-child) > td {
+  border-bottom: 1px solid gray;
+}
+
+#main #preview h1, #main #preview h2, #main #preview h3, #main #preview h4, #main #preview h5, #main #preview h6 {
+  margin: 1rem 0;
+  padding: 0;
+}
+
+#main #preview ul, #main #preview ol {
+  margin: 1rem 0;
+}
+
+#main #preview code {
+  background-color: #1f1f1f;
+  padding: .5rem;
+  display: block;
+  margin-right: 1rem;
+}
+
+#main #preview hr {
+  margin-right: 1rem;
+}
+
+#main #preview blockquote {
+  padding: .125rem;
+  border-left: 5px solid #444;
+  background-color: #1f1f1f;
+  padding-left: 1rem;
+  margin: 1rem 1rem 1rem 0;
+}
+
+#main #preview image {
+  max-width: 100%;
+  height: auto;
+}
+
+#search {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', 'Ubuntu', 'Droid Sans', sans-serif;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  background-color: #1f1f1f;
+  padding: .25rem 1rem;
+  visibility: hidden;
+}
+
+#search input {
   background-color: transparent;
+  border: 1px solid var(--main-back);
+  outline: 0;
+  padding: .5rem 1rem;
+  height: auto;
+  color: white;
+}
+
+#search input::-webkit-input-placeholder {
+  font-style: italic;
+}
+
+#search input:-ms-input-placeholder {
+  font-style: italic;
+}
+
+#search input::-ms-input-placeholder {
+  font-style: italic;
+}
+
+#search input::placeholder {
+  font-style: italic;
+}
+
+#search button {
+  padding: .5rem .1rem;
+  min-width: 100px;
+  color: white;
+  background-color: var(--main-back);
+  border: 1px solid transparent;
+  outline: 0;
   cursor: pointer;
 }
 
-#controls button:not(:first-child) {
-  margin-left: .25rem;
+#search #status {
+  color: white;
+}
+
+#search #error {
+  color: #e74c3c;
+  margin-right: 2rem;
+  display: inline-block;
+}
+
+#search .close {
+  color: white;
+  margin-right: 1rem;
+  cursor: pointer;
 }
 /*# sourceMappingURL=main.css.map */
